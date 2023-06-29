@@ -22,7 +22,7 @@ const SettingsProvider = ({ children }) => {
     const settings = {
       pageItems,
       showCompleted,
-      sort,
+      sort
     };
     localStorage.setItem("settings", JSON.stringify(settings));
   };
