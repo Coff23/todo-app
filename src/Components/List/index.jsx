@@ -5,17 +5,17 @@ import { Pagination } from "@mantine/core";
 function List({ list, toggleComplete }) {
 
   const {
-    displayCount,
-    showComplete,
+    pageItems,
+    showCompleted,
     sort
   } = useContext(SettingsContext);
   const [activePage, setPage] = useState(1);
 
-  const renderableList = showComplete ? list : list.filter(item => !item.complete);
-  const pageCount = Math.ceil(renderableList.length / displayCount)
+  const renderableList = showCompleted ? list : list.filter(item => !item.complete);
+  const pageCount = Math.ceil(renderableList.length / pageItems)
 
-  const listStart = displayCount * (activePage - 1);
-  const listEnd = listStart + displayCount;
+  const listStart = pageItems * (activePage - 1);
+  const listEnd = listStart + pageItems;
   const displayList = renderableList.slice(listStart, listEnd);
 
   return (

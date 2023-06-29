@@ -1,19 +1,24 @@
 import { useContext, useState } from "react";
 import { SettingsContext } from "../../Context/Settings";
-import { createStyles, Button, Switch, TextInput, Text } from "@mantine/core";
+import { createStyles, Button, Switch, TextInput, Text, Grid, NumberInput } from "@mantine/core";
+import { IconSettings } from "@tabler/icons-react";
+import { When } from "react-if";
 
 const useStyles = createStyles((theme) => ({
   h1: {
     backgroundColor: theme.colors.gray[8],
     color: theme.colors.gray[0],
+    width: '80%',
+    margin: 'auto',
+    fontSize: theme.fontSizes.lg,
+    padding: theme.spacing.md,
+    marginTop: theme.spacing.md,
+    marginBottom: theme.spacing.md,
   },
   div: {
     display: 'flex',
     justifyContent: 'space-evenly',
     padding: theme.spacing.md,
-  },
-  section: {
-    border: `1px solid gray`,
   },
   form: {
     display: 'flex',
@@ -35,59 +40,53 @@ const SettingsForm = (event) => {
   } = useContext(SettingsContext);
 
   const [showUpdate, setShowUpdate] = useState(false);
-
-
   const { classes } = useStyles();
+  const [show, setShow] = useState(false);
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
+  const handleSubmit = (event) => {
+    event.preventDefault();
     setShowUpdate(true);
     saveLocalStorage();
+    setShow(true);
+    event.target.reset();
   };
 
   return (
     <>
-      <h1 className={classes.h1}> Manage Settings </h1>
-      <div className={classes.div}>
-        <section className={classes.section}>
-          <h3>Update Settings</h3>
+      <h1 className={classes.h1}><IconSettings /> Manage Settings </h1>
+      <Grid>
+        <Grid.Col span={4}>
           <form onSubmit={handleSubmit} className={classes.form} >
-
+            <Text fontSize="xl" weight="bold">Update Settings</Text>
             <Switch
-              onLabel="Show Completed?"
               checked={showCompleted}
-              onChange={(event) => setShowCompleted(event.target.checked)}
+              onChange={(event) => setShowCompleted(event.currentTarget.checked)}
+              label="Show Completed?"
             />
-            <input
-              type="number"
-              name="pageItems"
+            <NumberInput
               label="Items per page"
               placeholder={pageItems}
               value={pageItems}
-              onChange={(event) => setPageItems(event.target.value)}
+              onChange={setPageItems}
             />
-
             <TextInput
               label="Sort by"
               placeholder="difficulty"
               value={sort}
               onChange={(event) => setSort(event.target.value)}
             />
-
-            <Button type="submit">Update Settings</Button>
+            <Button type="submit">Show New Settings</Button>
           </form>
-        </section>
-        {
-          showUpdate &&
-          <section className={classes.section}>
-            <h3>Updated Settings</h3>
-            <Text> Show Completed: {showCompleted ? 'yes' : 'no'}</Text>
+        </Grid.Col>
+        <Grid.Col span={4}>
+          <When condition={show}>
+            <Text fontSize="xl" weight="bold"> Updated Settings </Text>
+            <Text> {showCompleted ? 'Show' : 'Hide'} Completed ToDos </Text>
             <Text> Items Per Page: {pageItems}</Text>
             <Text> Sort Keyword: {sort}</Text>
-          </section>
-        }
-      </div>
-
+          </When>
+        </Grid.Col>
+      </Grid>
     </>
   )
 };
