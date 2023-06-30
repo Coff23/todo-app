@@ -37,6 +37,7 @@ export default function Login() {
           onChange={e => {
             setPassword(e.target.value)
           }}
+          type='password'
           placeholder='password'
         />
       </label>
