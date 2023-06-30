@@ -25,20 +25,26 @@ function AuthProvider({ children }) {
   }
 
   const login = (username, password) => {
-    let user = testUsers[username];
-    if(user && user.password === password) {
-      try {
-        validationToken(user.token);
-      } catch (error) {
-        setError(error);
-        console.log(error);
+    if(testUsers.hasOwnProperty(username)) {
+      let user = testUsers[username];
+      if(user && user.password === password) {
+        try {
+          validationToken(user.token);
+        } catch (error) {
+          setError(error);
+          console.log(error);
+        }
       }
     }
-  }
+  };
 
   const logout = () => {
     setUser({});
     setIsLoggedIn(false);
+  }
+
+  const can = (capability) => {
+    return user?.capabilities?.includes(capability);
   }
 
   const values = {
@@ -47,7 +53,7 @@ function AuthProvider({ children }) {
     error,
     login,
     logout,
-    // can,
+    can,
   }
   return (
     <AuthContext.Provider value={values}>
