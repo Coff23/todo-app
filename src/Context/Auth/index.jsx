@@ -1,50 +1,52 @@
-import React, { useState } from "react";
-import jwt_decode from 'jwt-decode';
-import testUsers from './lib/user';
+import React, { useState } from 'react'
+import testUsers from './lib/user'
+import jwt_decode from 'jwt-decode'
 
-export const AuthContext = React.createContext();
+export const AuthContext = React.createContext()
 
-function AuthProvider({ children }) {
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const [user, setUser] = useState({});
-  const [error, setError] = useState(null);
+export default function AuthProvider({ children }) {
+  const [isLoggedIn, setIsLoggedIn] = useState(false)
+  const [user, setUser] = useState({})
+  const [error, setError] = useState(null)
 
-  const validationToken = (token) => {
+  const validateToken = token => {
     try {
-      let validUser = jwt_decode(token);
-      console.log('validUser', validUser);
-      if(validUser) {
+      let validUser = jwt_decode(token)
+
+      if (validUser) {
+        setIsLoggedIn(true)
         setUser(validUser)
-        setIsLoggedIn(true);
-        console.log('User logged in');
+
       }
-    } catch (error) {
-      setError(error);
-      console.log(error);
+    } catch (err) {
+      setError(err)
+      setIsLoggedIn(false)
+
     }
   }
 
   const login = (username, password) => {
-    if(testUsers.hasOwnProperty(username)) {
-      let user = testUsers[username];
-      if(user && user.password === password) {
-        try {
-          validationToken(user.token);
-        } catch (error) {
-          setError(error);
-          console.log(error);
-        }
+    // get token from mock 'database' using user, pass
+
+    let user = testUsers[username]
+
+    if (user && password === user.password) {
+      try {
+        validateToken(user.token)
+
+      } catch (err) {
+        console.error('ERROR VALIDATING', err)
       }
     }
-  };
-
-  const logout = () => {
-    setUser({});
-    setIsLoggedIn(false);
   }
 
-  const can = (capability) => {
-    return user?.capabilities?.includes(capability);
+  const logout = () => {
+    setUser({})
+    setIsLoggedIn(false)
+  }
+
+  const can = capability => {
+    return user?.capabilities?.includes(capability)
   }
 
   const values = {
@@ -55,11 +57,6 @@ function AuthProvider({ children }) {
     logout,
     can,
   }
-  return (
-    <AuthContext.Provider value={values}>
-      {children}
-    </AuthContext.Provider>
-  )
-}
 
-export default AuthProvider;
+  return <AuthContext.Provider value={values}>{children}</AuthContext.Provider>
+}
