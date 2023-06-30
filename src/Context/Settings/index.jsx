@@ -19,8 +19,14 @@ const SettingsProvider = ({ children }) => {
   }, []);
 
   const saveSettingsToLocalStorage = () => {
-    localStorage.setItem("settings", JSON.stringify(pageItems, showCompleted, sort));
+    const settings = {
+      pageItems,
+      showCompleted,
+      sort,
+    };
+    localStorage.setItem("settings", JSON.stringify(settings));
   };
+  
 
   const updatePageItems = (count) => {
     setPageItems(count);
